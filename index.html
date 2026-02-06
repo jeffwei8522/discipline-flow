@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>科技之星 - 違規行為判定流程圖</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700;900&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Noto Sans TC', sans-serif;
+    background: #f0f2f5;
+    color: #1a1a2e;
+    padding: 40px 20px;
+  }
+
+  .container {
+    max-width: 960px;
+    margin: 0 auto;
+  }
+
+  /* Header */
+  .header {
+    text-align: center;
+    margin-bottom: 50px;
+  }
+  .header h1 {
+    font-size: 28px;
+    font-weight: 900;
+    color: #1a1a2e;
+    margin-bottom: 8px;
+  }
+  .header h2 {
+    font-size: 20px;
+    font-weight: 500;
+    color: #6c757d;
+  }
+  .header .badge {
+    display: inline-block;
+    margin-top: 12px;
+    padding: 4px 16px;
+    background: #e8f4fd;
+    color: #1976d2;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 500;
+  }
+
+  /* Flow connector */
+  .connector {
+    display: flex;
+    justify-content: center;
+    padding: 12px 0;
+  }
+  .connector .arrow {
+    width: 3px;
+    height: 40px;
+    background: linear-gradient(to bottom, #90caf9, #1976d2);
+    position: relative;
+  }
+  .connector .arrow::after {
+    content: '';
+    position: absolute;
+    bottom: -6px;
+    left: -5px;
+    border-left: 6.5px solid transparent;
+    border-right: 6.5px solid transparent;
+    border-top: 8px solid #1976d2;
+  }
+
+  /* Step card */
+  .step-card {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    overflow: hidden;
+    margin-bottom: 8px;
+  }
+  .step-header {
+    padding: 20px 28px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .step-number {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    font-weight: 900;
+    color: #fff;
+    flex-shrink: 0;
+  }
+  .step-title {
+    font-size: 20px;
+    font-weight: 700;
+  }
+  .step-subtitle {
+    font-size: 14px;
+    color: #6c757d;
+    margin-top: 2px;
+  }
+
+  /* Decision branches */
+  .branches {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    padding: 0 28px 24px;
+  }
+  .branch {
+    padding: 20px;
+    border-radius: 12px;
+    margin: 6px;
+    position: relative;
+  }
+  .branch-yes {
+    background: #fff3e0;
+    border: 2px solid #ff9800;
+  }
+  .branch-no {
+    background: #e8f5e9;
+    border: 2px solid #4caf50;
+  }
+  .branch-label {
+    display: inline-block;
+    padding: 2px 12px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+  .branch-yes .branch-label {
+    background: #ff9800;
+    color: #fff;
+  }
+  .branch-no .branch-label {
+    background: #4caf50;
+    color: #fff;
+  }
+  .branch h4 {
+    font-size: 15px;
+    margin-bottom: 8px;
+  }
+  .branch ul {
+    list-style: none;
+    padding: 0;
+  }
+  .branch li {
+    font-size: 13px;
+    padding: 3px 0;
+    padding-left: 18px;
+    position: relative;
+    color: #555;
+  }
+  .branch li::before {
+    content: '>';
+    position: absolute;
+    left: 2px;
+    font-weight: bold;
+    color: #999;
+  }
+  .branch .result {
+    margin-top: 12px;
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 700;
+  }
+  .branch-yes .result {
+    background: #fff8e1;
+    color: #e65100;
+    border: 1px solid #ffcc80;
+  }
+  .branch-no .result {
+    background: #e8f5e9;
+    color: #2e7d32;
+    border: 1px solid #a5d6a7;
+  }
+
+  /* Step 2 multi-path */
+  .paths {
+    padding: 0 28px 24px;
+  }
+  .path-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .path-item {
+    padding: 16px;
+    border-radius: 12px;
+    border: 2px solid #e0e0e0;
+    transition: transform 0.2s;
+  }
+  .path-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  }
+  .path-item .who {
+    font-size: 13px;
+    font-weight: 700;
+    color: #6c757d;
+    margin-bottom: 6px;
+  }
+  .path-item .classification {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .path-item .desc {
+    font-size: 12px;
+    color: #888;
+  }
+  .path-item.ext { border-color: #ff9800; background: #fff8e1; }
+  .path-item.ext .classification { color: #e65100; }
+  .path-item.int { border-color: #2196f3; background: #e3f2fd; }
+  .path-item.int .classification { color: #1565c0; }
+
+  .note-box {
+    margin: 12px 6px 0;
+    padding: 10px 16px;
+    background: #fce4ec;
+    border-left: 4px solid #e91e63;
+    border-radius: 0 8px 8px 0;
+    font-size: 13px;
+    color: #880e4f;
+    font-weight: 500;
+  }
+
+  /* Step 3 intent */
+  .intent-grid {
+    padding: 0 28px 24px;
+  }
+  .intent-row {
+    display: grid;
+    grid-template-columns: 160px 1fr;
+    gap: 12px;
+    margin-bottom: 8px;
+    align-items: center;
+  }
+  .intent-label {
+    padding: 10px 14px;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 14px;
+    text-align: center;
+  }
+  .intent-effect {
+    padding: 10px 14px;
+    background: #f5f5f5;
+    border-radius: 10px;
+    font-size: 13px;
+  }
+  .intent-danger { background: #ffcdd2; color: #b71c1c; }
+  .intent-warning { background: #fff9c4; color: #f57f17; }
+  .intent-safe { background: #c8e6c9; color: #1b5e20; }
+
+  /* Severity mapping */
+  .severity-section {
+    padding: 0 28px 28px;
+  }
+  .severity-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 6px;
+  }
+  .severity-table th {
+    background: #1a1a2e;
+    color: #fff;
+    padding: 12px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    text-align: left;
+  }
+  .severity-table th:first-child { border-radius: 8px 0 0 8px; }
+  .severity-table th:last-child { border-radius: 0 8px 8px 0; }
+  .severity-table td {
+    padding: 12px 16px;
+    font-size: 13px;
+    background: #fff;
+  }
+  .severity-table tr td:first-child {
+    border-radius: 8px 0 0 8px;
+    font-weight: 700;
+    font-size: 15px;
+  }
+  .severity-table tr td:last-child { border-radius: 0 8px 8px 0; }
+
+  .sev-1 td:first-child { color: #2e7d32; border-left: 4px solid #4caf50; }
+  .sev-2 td:first-child { color: #f9a825; border-left: 4px solid #fdd835; }
+  .sev-3 td:first-child { color: #ef6c00; border-left: 4px solid #ff9800; }
+  .sev-4 td:first-child { color: #c62828; border-left: 4px solid #f44336; }
+  .sev-5 td:first-child { color: #fff; background: #b71c1c !important; border-left: 4px solid #880e4f; }
+
+  /* Accumulation */
+  .accum-flow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    padding: 0 28px 28px;
+    flex-wrap: wrap;
+  }
+  .accum-box {
+    padding: 14px 20px;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 14px;
+    text-align: center;
+    min-width: 100px;
+  }
+  .accum-arrow {
+    font-size: 24px;
+    color: #90a4ae;
+    padding: 0 6px;
+  }
+  .accum-1 { background: #e3f2fd; color: #1565c0; border: 2px solid #90caf9; }
+  .accum-2 { background: #fff8e1; color: #ef6c00; border: 2px solid #ffcc80; }
+  .accum-3 { background: #fce4ec; color: #c62828; border: 2px solid #ef9a9a; }
+  .accum-4 { background: #b71c1c; color: #fff; border: 2px solid #880e4f; }
+
+  /* Procedure */
+  .procedure {
+    padding: 0 28px 28px;
+  }
+  .proc-step {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 6px;
+    align-items: flex-start;
+  }
+  .proc-num {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #1976d2;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 14px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .proc-content {
+    flex: 1;
+    padding: 8px 0;
+  }
+  .proc-content strong {
+    font-size: 14px;
+  }
+  .proc-content span {
+    display: block;
+    font-size: 12px;
+    color: #888;
+    margin-top: 2px;
+  }
+  .proc-line {
+    width: 2px;
+    height: 12px;
+    background: #bbdefb;
+    margin-left: 15px;
+  }
+
+  /* Examples */
+  .examples {
+    padding: 0 28px 28px;
+  }
+  .example-card {
+    background: #fafafa;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 12px;
+  }
+  .example-card h4 {
+    font-size: 15px;
+    margin-bottom: 12px;
+    color: #1a1a2e;
+  }
+  .example-steps {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .ex-chip {
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .ex-arrow { color: #bbb; font-size: 16px; }
+  .ex-q { background: #e3f2fd; color: #1565c0; }
+  .ex-a { background: #fff3e0; color: #e65100; }
+  .ex-result {
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+  }
+  .result-申誡 { background: #fff9c4; color: #f57f17; }
+  .result-記過 { background: #ffe0b2; color: #e65100; }
+  .result-記大過 { background: #ffcdd2; color: #c62828; }
+  .result-解僱 { background: #b71c1c; color: #fff; }
+
+  /* Foreword */
+  .foreword {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    padding: 32px 28px;
+    margin-bottom: 8px;
+  }
+  .foreword h3 {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: #1a1a2e;
+  }
+  .foreword p {
+    font-size: 14px;
+    line-height: 1.8;
+    color: #555;
+    margin-bottom: 10px;
+  }
+  .foreword .highlight {
+    color: #1565c0;
+    font-weight: 600;
+  }
+
+  /* SQDIW category cards */
+  .category-section {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    padding: 28px;
+    margin-bottom: 8px;
+  }
+  .category-section h3 {
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 6px;
+    color: #1a1a2e;
+  }
+  .category-section .section-desc {
+    font-size: 13px;
+    color: #888;
+    margin-bottom: 20px;
+  }
+  .cat-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+  .cat-card {
+    border-radius: 14px;
+    padding: 22px 20px;
+    border-left: 6px solid;
+    position: relative;
+    transition: transform 0.2s;
+  }
+  .cat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+  }
+  .cat-card .cat-letter {
+    font-size: 36px;
+    font-weight: 900;
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .cat-card .cat-name {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .cat-card .cat-desc {
+    font-size: 13px;
+    line-height: 1.6;
+    margin-bottom: 10px;
+  }
+  .cat-card .cat-examples {
+    font-size: 12px;
+    color: #666;
+    line-height: 1.5;
+  }
+  .cat-card .cat-examples strong {
+    color: #888;
+  }
+
+  /* W card spans full width */
+  .cat-card-full {
+    grid-column: 1 / -1;
+  }
+
+  .cat-S { background: #fef2f2; border-color: #dc2626; }
+  .cat-S .cat-letter { color: #dc2626; }
+  .cat-S .cat-name { color: #991b1b; }
+  .cat-S .cat-desc { color: #7f1d1d; }
+
+  .cat-Q { background: #fff7ed; border-color: #ea580c; }
+  .cat-Q .cat-letter { color: #ea580c; }
+  .cat-Q .cat-name { color: #9a3412; }
+  .cat-Q .cat-desc { color: #7c2d12; }
+
+  .cat-D { background: #eff6ff; border-color: #2563eb; }
+  .cat-D .cat-letter { color: #2563eb; }
+  .cat-D .cat-name { color: #1e40af; }
+  .cat-D .cat-desc { color: #1e3a5f; }
+
+  .cat-I { background: #faf5ff; border-color: #7c3aed; }
+  .cat-I .cat-letter { color: #7c3aed; }
+  .cat-I .cat-name { color: #5b21b6; }
+  .cat-I .cat-desc { color: #4c1d95; }
+
+  .cat-W { background: #fefce8; border-color: #ca8a04; }
+  .cat-W .cat-letter { color: #ca8a04; }
+  .cat-W .cat-name { color: #854d0e; }
+  .cat-W .cat-desc { color: #713f12; }
+
+  /* Divider with label */
+  .section-divider {
+    display: flex;
+    align-items: center;
+    margin: 36px 0 28px;
+    gap: 16px;
+  }
+  .section-divider::before,
+  .section-divider::after {
+    content: '';
+    flex: 1;
+    height: 2px;
+    background: linear-gradient(to right, transparent, #90caf9, transparent);
+  }
+  .section-divider .divider-label {
+    background: linear-gradient(135deg, #1565c0, #42a5f5);
+    color: #fff;
+    padding: 8px 24px;
+    border-radius: 24px;
+    font-size: 15px;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  /* Footer */
+  .footer {
+    text-align: center;
+    padding: 40px 0 20px;
+    color: #aaa;
+    font-size: 12px;
+  }
+
+  /* Print */
+  @media print {
+    body { background: #fff; padding: 10px; }
+    .step-card { box-shadow: none; border: 1px solid #ddd; break-inside: avoid; }
+    .path-item:hover { transform: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- Header -->
+  <div class="header">
+    <h1>違規行為判定流程圖</h1>
+    <h2>科技之星交通股份有限公司</h2>
+    <div class="badge">內部教育訓練用 - 115 年 02 月版</div>
+  </div>
+
+  <!-- ==================== FOREWORD ==================== -->
+  <div class="foreword">
+    <h3>前言：為什麼需要這套制度？</h3>
+    <p>
+      科技之星交通股份有限公司經營交通車、客運車及南科接駁等業務，員工行為直接影響<span class="highlight">乘客安全</span>、<span class="highlight">服務品質</span>及<span class="highlight">公司合規</span>。
+      過去公司缺乏明確、統一的違規行為判定標準，當需要處理員工違規時，容易產生標準不一、程序不全的問題。
+    </p>
+    <p>
+      本制度以<span class="highlight">「原則導向」</span>取代窮舉式條文 — 我們無法預測所有情境，但可以透過一致的分類框架和判定流程，確保每一次處分都有<span class="highlight">合理依據</span>、<span class="highlight">正當程序</span>與<span class="highlight">書面紀錄</span>。
+    </p>
+    <p style="margin-bottom: 0;">
+      所有違規行為歸入下方五大分類（<span class="highlight">SQDIW</span>），再透過三個問題決定嚴重程度與對應處分。先認識分類，再走流程。
+    </p>
+  </div>
+
+  <div class="connector"><div class="arrow"></div></div>
+
+  <!-- ==================== SQDIW CATEGORIES ==================== -->
+  <div class="category-section">
+    <h3>SQDIW 五大違規行為分類</h3>
+    <div class="section-desc">每一起違規事件，先判斷它屬於哪一類。一個事件可能同時涉及多個分類，取最重者為主分類。</div>
+    <div class="cat-grid">
+
+      <div class="cat-card cat-S">
+        <div class="cat-letter">S</div>
+        <div class="cat-name">Safety 安全類</div>
+        <div class="cat-desc">涉及人身安全或可能造成傷亡的行為。安全類違規嚴重程度至少從「嚴重」起跳。</div>
+        <div class="cat-examples">
+          <strong>常見樣態：</strong>行車中使用手機、闖紅燈、未執行酒測/血壓、超速、車未停妥開門、酒駕、毒品
+        </div>
+      </div>
+
+      <div class="cat-card cat-Q">
+        <div class="cat-letter">Q</div>
+        <div class="cat-name">Quality 服務品質類</div>
+        <div class="cat-desc">影響乘客體驗或外部服務水準的行為。涉及外部對象時，嚴重程度加一級。</div>
+        <div class="cat-examples">
+          <strong>常見樣態：</strong>過站不停、態度惡劣、催促乘客、車輛髒亂、拒載、未依規定廣播
+        </div>
+      </div>
+
+      <div class="cat-card cat-D">
+        <div class="cat-letter">D</div>
+        <div class="cat-name">Discipline 紀律類</div>
+        <div class="cat-desc">違反公司規章、出勤要求或指揮調度的行為。</div>
+        <div class="cat-examples">
+          <strong>常見樣態：</strong>遲到、早退、曠職、脫班、不服從合理調度、擅離職守、服儀不整
+        </div>
+      </div>
+
+      <div class="cat-card cat-I">
+        <div class="cat-letter">I</div>
+        <div class="cat-name">Integrity 誠信類</div>
+        <div class="cat-desc">涉及造假、欺騙或隱匿的行為。誠信類天然帶有「故意」成分，不適用過失減輕。</div>
+        <div class="cat-examples">
+          <strong>常見樣態：</strong>偽造行車紀錄、竄改里程數據、隱匿交通事故、冒名頂替、收受不當利益
+        </div>
+      </div>
+
+      <div class="cat-card cat-W cat-card-full">
+        <div class="cat-letter">W</div>
+        <div class="cat-name">Workplace 職場行為類</div>
+        <div class="cat-desc">影響同事之間人際關係或職場環境的行為。包含性別工作平等法及職場安全衛生法規範之事項。</div>
+        <div class="cat-examples">
+          <strong>常見樣態：</strong>言語霸凌、肢體衝突、性騷擾、散播謠言中傷同事、威脅恐嚇、歧視
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Section divider -->
+  <div class="section-divider">
+    <div class="divider-label">判定流程：三個問題決定處分</div>
+  </div>
+
+  <!-- ==================== STEP 1 ==================== -->
+  <div class="step-card">
+    <div class="step-header">
+      <div class="step-number" style="background: linear-gradient(135deg, #e53935, #ff7043);">1</div>
+      <div>
+        <div class="step-title">有沒有安全風險？</div>
+        <div class="step-subtitle">最優先判斷 - 安全問題不能分級慢慢來</div>
+      </div>
+    </div>
+    <div class="branches">
+      <div class="branch branch-yes">
+        <div class="branch-label">YES - 有安全風險</div>
+        <h4>有人受傷或可能受傷</h4>
+        <ul>
+          <li>行車中使用手機</li>
+          <li>闖紅燈、危險駕駛</li>
+          <li>未量血壓/酒測</li>
+          <li>車未停妥開車門</li>
+        </ul>
+        <div class="result">
+          分類 S（安全）<br>嚴重程度至少「嚴重」起跳<br>
+          <strong>酒駕/毒品/暴力 → 直接「極重大」</strong>
+        </div>
+      </div>
+      <div class="branch branch-no">
+        <div class="branch-label">NO - 無直接安全風險</div>
+        <h4>不涉及人身安全</h4>
+        <ul>
+          <li>服儀問題</li>
+          <li>遲到/缺勤</li>
+          <li>態度/言語問題</li>
+          <li>行政疏失</li>
+        </ul>
+        <div class="result">
+          繼續 Step 2 判斷
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="connector"><div class="arrow"></div></div>
+
+  <!-- ==================== STEP 2 ==================== -->
+  <div class="step-card">
+    <div class="step-header">
+      <div class="step-number" style="background: linear-gradient(135deg, #1565c0, #42a5f5);">2</div>
+      <div>
+        <div class="step-title">影響的是誰？</div>
+        <div class="step-subtitle">依影響對象決定行為分類</div>
+      </div>
+    </div>
+    <div class="paths">
+      <div class="path-grid">
+        <div class="path-item ext">
+          <div class="who">影響外部 - 乘客</div>
+          <div class="classification">Q 服務品質類</div>
+          <div class="desc">過站不停、態度惡劣、催促乘客、車輛髒亂</div>
+        </div>
+        <div class="path-item ext">
+          <div class="who">影響外部 - 甲方/主管機關</div>
+          <div class="classification">看行為本質歸入 S / Q / D</div>
+          <div class="desc">合約被罰、稽查不合格 → 依行為而非罰金判定</div>
+        </div>
+        <div class="path-item int">
+          <div class="who">影響內部 - 同事之間</div>
+          <div class="classification">W 職場行為類</div>
+          <div class="desc">霸凌、騷擾、言語威脅、肢體衝突、散播謠言</div>
+        </div>
+        <div class="path-item int">
+          <div class="who">影響內部 - 行政/流程</div>
+          <div class="classification">D 紀律類 / I 誠信類</div>
+          <div class="desc">遲到、脫班、不服從調度 → D 類<br>偽造紀錄、隱匿事故 → I 類</div>
+        </div>
+      </div>
+      <div class="note-box">
+        影響到外部（乘客 / 甲方 / 社會大眾）→ 嚴重程度加一級
+      </div>
+    </div>
+  </div>
+
+  <div class="connector"><div class="arrow"></div></div>
+
+  <!-- ==================== STEP 3 ==================== -->
+  <div class="step-card">
+    <div class="step-header">
+      <div class="step-number" style="background: linear-gradient(135deg, #6a1b9a, #ab47bc);">3</div>
+      <div>
+        <div class="step-title">故意的還是過失？</div>
+        <div class="step-subtitle">主觀意圖影響嚴重程度的升降</div>
+      </div>
+    </div>
+    <div class="intent-grid">
+      <div class="intent-row">
+        <div class="intent-label intent-danger">故意 / 明知故犯</div>
+        <div class="intent-effect"><strong>嚴重程度加一級</strong>。涉及造假、欺騙 → 同時歸類 I（誠信）。累犯視同故意。</div>
+      </div>
+      <div class="intent-row">
+        <div class="intent-label intent-warning">重大過失</div>
+        <div class="intent-effect">維持原級。應注意能注意而不注意。<strong>再犯視同故意。</strong></div>
+      </div>
+      <div class="intent-row">
+        <div class="intent-label intent-safe">不可抗力</div>
+        <div class="intent-effect">得減輕或免除處分。需有客觀事證（如道路壅塞、天災等）。</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="connector"><div class="arrow"></div></div>
+
+  <!-- ==================== STEP 4: Severity Mapping ==================== -->
+  <div class="step-card">
+    <div class="step-header">
+      <div class="step-number" style="background: linear-gradient(135deg, #2e7d32, #66bb6a);">4</div>
+      <div>
+        <div class="step-title">嚴重程度 → 對應處分</div>
+        <div class="step-subtitle">依前三步驟判定結果，對照下表決定處分</div>
+      </div>
+    </div>
+    <div class="severity-section">
+      <table class="severity-table">
+        <thead>
+          <tr><th>嚴重程度</th><th>處分</th><th>判定要件</th></tr>
+        </thead>
+        <tbody>
+          <tr class="sev-1"><td>輕微</td><td>口頭告誡（留紀錄）</td><td>危害低、首犯、可補救、非故意</td></tr>
+          <tr class="sev-2"><td>一般</td><td>申誡</td><td>有一定影響、疏忽造成、或告誡後再犯</td></tr>
+          <tr class="sev-3"><td>嚴重</td><td>記過</td><td>影響乘客/公司聲譽、故意或重大疏忽、累犯</td></tr>
+          <tr class="sev-4"><td>重大</td><td>記大過</td><td>有人身安全風險、嚴重損害公司利益</td></tr>
+          <tr class="sev-5"><td>極重大</td><td>解僱（勞基法 §12）</td><td>酒駕/毒品/暴力/累積大過/嚴重違規</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="connector"><div class="arrow"></div></div>
+
+  <!-- ==================== Accumulation ==================== -->
+  <div class="step-card">
+    <div class="step-header">
+      <div class="step-number" style="background: linear-gradient(135deg, #455a64, #78909c);">+</div>
+      <div>
+        <div class="step-title">累計升級機制</div>
+        <div class="step-subtitle">小過累積也會走到解僱，每一步都有紀錄</div>
+      </div>
+    </div>
+    <div class="accum-flow">
+      <div class="accum-box accum-1">申誡 x3</div>
+      <div class="accum-arrow">=</div>
+      <div class="accum-box accum-2">記過 x1</div>
+      <div class="accum-arrow" style="padding: 0 12px;">|</div>
+      <div class="accum-box accum-2">記過 x3</div>
+      <div class="accum-arrow">=</div>
+      <div class="accum-box accum-3">記大過 x1</div>
+      <div class="accum-arrow" style="padding: 0 12px;">|</div>
+      <div class="accum-box accum-3">記大過 x3<br><small>或年度內 x2</small></div>
+      <div class="accum-arrow">=</div>
+      <div class="accum-box accum-4">解僱</div>
+    </div>
+  </div>
+
+  <div class="connector"><div class="arrow"></div></div>
+
+  <!-- ==================== Procedure ==================== -->
+  <div class="step-card">
+    <div class="step-header">
+      <div class="step-number" style="background: linear-gradient(135deg, #37474f, #607d8b);">!</div>
+      <div>
+        <div class="step-title">每次懲處必跑程序</div>
+        <div class="step-subtitle">程序不完整 = 勞檢不過 = 法院判你輸</div>
+      </div>
+    </div>
+    <div class="procedure">
+      <div class="proc-step">
+        <div class="proc-num">1</div>
+        <div class="proc-content"><strong>事件發生 → 啟動調查</strong><span>蒐集事證：監視器、證人、書面紀錄、照片</span></div>
+      </div>
+      <div class="proc-line"></div>
+      <div class="proc-step">
+        <div class="proc-num">2</div>
+        <div class="proc-content"><strong>填寫「違規行為判定暨處分紀錄表」</strong><span>跑三個問題：安全風險？影響誰？故意或過失？→ 確定分類 + 嚴重程度</span></div>
+      </div>
+      <div class="proc-line"></div>
+      <div class="proc-step">
+        <div class="proc-num">3</div>
+        <div class="proc-content"><strong>書面通知當事人</strong><span>告知違規事實 + 擬處分內容</span></div>
+      </div>
+      <div class="proc-line"></div>
+      <div class="proc-step">
+        <div class="proc-num" style="background: #e53935;">4</div>
+        <div class="proc-content"><strong>給予陳述機會（3 個工作日）</strong><span style="color: #c62828; font-weight: 600;">最重要！法院最在意這一步。沒做 = 程序違法</span></div>
+      </div>
+      <div class="proc-line"></div>
+      <div class="proc-step">
+        <div class="proc-num">5</div>
+        <div class="proc-content"><strong>處分決定 → 主管核定</strong></div>
+      </div>
+      <div class="proc-line"></div>
+      <div class="proc-step">
+        <div class="proc-num">6</div>
+        <div class="proc-content"><strong>書面通知 + 當事人簽收</strong><span>拒簽 → 見證人簽名 + 載明送達方式</span></div>
+      </div>
+      <div class="proc-line"></div>
+      <div class="proc-step">
+        <div class="proc-num">7</div>
+        <div class="proc-content"><strong>存入個人檔案</strong><span>紀錄表一式兩份：公司存檔 + 當事人留存</span></div>
+      </div>
+      <div class="proc-line"></div>
+      <div class="proc-step">
+        <div class="proc-num" style="background: #6a1b9a;">8</div>
+        <div class="proc-content"><strong>員工如有異議 → 7 個工作日內書面申訴</strong><span>公司 14 個工作日內覆議，書面通知結果。不得因申訴而受不利處分。</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="connector"><div class="arrow"></div></div>
+
+  <!-- ==================== Examples ==================== -->
+  <div class="step-card">
+    <div class="step-header">
+      <div class="step-number" style="background: linear-gradient(135deg, #00695c, #26a69a);">?</div>
+      <div>
+        <div class="step-title">實際案例演練</div>
+        <div class="step-subtitle">用三步驟跑一次，建立判斷直覺</div>
+      </div>
+    </div>
+    <div class="examples">
+
+      <div class="example-card">
+        <h4>案例 1：駕駛行車中使用手機，被南科稽查拍到</h4>
+        <div class="example-steps">
+          <span class="ex-chip ex-q">安全風險？</span>
+          <span class="ex-chip ex-a">YES - 行車分心</span>
+          <span class="ex-arrow">></span>
+          <span class="ex-chip ex-q">影響誰？</span>
+          <span class="ex-chip ex-a">乘客 + 甲方</span>
+          <span class="ex-arrow">></span>
+          <span class="ex-chip ex-q">故意？</span>
+          <span class="ex-chip ex-a">故意</span>
+          <span class="ex-arrow">></span>
+          <span class="ex-result result-記大過">S 類 / 重大 / 記大過</span>
+        </div>
+      </div>
+
+      <div class="example-card">
+        <h4>案例 2：駕駛 A 在休息室言語霸凌駕駛 B</h4>
+        <div class="example-steps">
+          <span class="ex-chip ex-q">安全風險？</span>
+          <span class="ex-chip ex-a">NO</span>
+          <span class="ex-arrow">></span>
+          <span class="ex-chip ex-q">影響誰？</span>
+          <span class="ex-chip ex-a">內部同事</span>
+          <span class="ex-arrow">></span>
+          <span class="ex-chip ex-q">故意？</span>
+          <span class="ex-chip ex-a">故意 +1 級</span>
+          <span class="ex-arrow">></span>
+          <span class="ex-result result-記過">W 類 / 嚴重 / 記過~大過</span>
+        </div>
+      </div>
+
+      <div class="example-card">
+        <h4>案例 3：駕駛遲到 10 分鐘導致脫班</h4>
+        <div class="example-steps">
+          <span class="ex-chip ex-q">安全風險？</span>
+          <span class="ex-chip ex-a">NO</span>
+          <span class="ex-arrow">></span>
+          <span class="ex-chip ex-q">影響誰？</span>
+          <span class="ex-chip ex-a">乘客 + 甲方</span>
+          <span class="ex-arrow">></span>
+          <span class="ex-chip ex-q">故意？</span>
+          <span class="ex-chip ex-a">過失</span>
+          <span class="ex-arrow">></span>
+          <span class="ex-result result-申誡">D 類 / 一般 / 申誡</span>
+        </div>
+      </div>
+
+      <div class="example-card">
+        <h4>案例 4：駕駛偽造行車紀錄里程數</h4>
+        <div class="example-steps">
+          <span class="ex-chip ex-q">安全風險？</span>
+          <span class="ex-chip ex-a">NO</span>
+          <span class="ex-arrow">></span>
+          <span class="ex-chip ex-q">影響誰？</span>
+          <span class="ex-chip ex-a">公司 + 甲方</span>
+          <span class="ex-arrow">></span>
+          <span class="ex-chip ex-q">故意？</span>
+          <span class="ex-chip ex-a">故意造假</span>
+          <span class="ex-arrow">></span>
+          <span class="ex-result result-記大過">I 類 / 重大 / 記大過</span>
+        </div>
+      </div>
+
+      <div class="example-card">
+        <h4>案例 5：駕駛酒測值 0.18，執勤前被攔下</h4>
+        <div class="example-steps">
+          <span class="ex-chip ex-q">安全風險？</span>
+          <span class="ex-chip ex-a">YES - 酒駕</span>
+          <span class="ex-arrow">></span>
+          <span class="ex-chip ex-q">影響誰？</span>
+          <span class="ex-chip ex-a">全部</span>
+          <span class="ex-arrow">></span>
+          <span class="ex-chip ex-q">故意？</span>
+          <span class="ex-chip ex-a">故意</span>
+          <span class="ex-arrow">></span>
+          <span class="ex-result result-解僱">S 類 / 極重大 / 解僱</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="footer">
+    科技之星交通股份有限公司 | 違規行為判定流程圖 | 115 年 02 月版 | 內部教育訓練用<br>
+    列印方式：瀏覽器 > Ctrl+P > 選擇「另存為 PDF」
+  </div>
+
+</div>
+
+</body>
+</html>
