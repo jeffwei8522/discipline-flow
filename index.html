@@ -495,6 +495,15 @@
   .cat-card .cat-examples strong {
     color: #888;
   }
+  .cat-card .cat-baseline {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 4px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 700;
+    background: rgba(0,0,0,0.08);
+  }
 
   /* W card spans full width */
   .cat-card-full {
@@ -603,10 +612,11 @@
       <div class="cat-card cat-S">
         <div class="cat-letter">S</div>
         <div class="cat-name">Safety 安全類</div>
-        <div class="cat-desc">涉及人身安全或可能造成傷亡的行為。安全類違規嚴重程度至少從「嚴重」起跳。</div>
+        <div class="cat-desc">涉及人身安全或可能造成傷亡的行為。安全類違規嚴重程度至少從第 3 級起跳。</div>
         <div class="cat-examples">
           <strong>常見樣態：</strong>行車中使用手機、闖紅燈、未執行酒測/血壓、超速、車未停妥開門、酒駕、毒品
         </div>
+        <div class="cat-baseline" style="background:#fecaca; color:#991b1b;">起始級別：第 3 級（記過）～ 酒駕/毒品/暴力直接第 5 級（解僱）</div>
       </div>
 
       <div class="cat-card cat-Q">
@@ -616,6 +626,7 @@
         <div class="cat-examples">
           <strong>常見樣態：</strong>過站不停、態度惡劣、催促乘客、車輛髒亂、拒載、未依規定廣播
         </div>
+        <div class="cat-baseline" style="background:#fed7aa; color:#9a3412;">起始級別：第 1 級（口頭告誡）～ 最高第 4 級（記大過）</div>
       </div>
 
       <div class="cat-card cat-D">
@@ -625,6 +636,7 @@
         <div class="cat-examples">
           <strong>常見樣態：</strong>遲到、早退、曠職、脫班、不服從合理調度、擅離職守、服儀不整
         </div>
+        <div class="cat-baseline" style="background:#bfdbfe; color:#1e40af;">起始級別：第 1 級（口頭告誡）～ 最高第 4 級（記大過）</div>
       </div>
 
       <div class="cat-card cat-I">
@@ -634,6 +646,7 @@
         <div class="cat-examples">
           <strong>常見樣態：</strong>偽造行車紀錄、竄改里程數據、隱匿交通事故、冒名頂替、收受不當利益
         </div>
+        <div class="cat-baseline" style="background:#e9d5ff; color:#5b21b6;">起始級別：第 2 級（申誡）～ 最高第 5 級（解僱）</div>
       </div>
 
       <div class="cat-card cat-W cat-card-full">
@@ -643,6 +656,7 @@
         <div class="cat-examples">
           <strong>常見樣態：</strong>言語霸凌、肢體衝突、性騷擾、散播謠言中傷同事、威脅恐嚇、歧視
         </div>
+        <div class="cat-baseline" style="background:#fef08a; color:#854d0e;">起始級別：第 2 級（申誡）～ 涉及性騷擾/暴力直接第 4 級以上（記大過～解僱）</div>
       </div>
 
     </div>
@@ -673,8 +687,8 @@
           <li>車未停妥開車門</li>
         </ul>
         <div class="result">
-          分類 S（安全）<br>嚴重程度至少「嚴重」起跳<br>
-          <strong>酒駕/毒品/暴力 → 直接「極重大」</strong>
+          分類 S（安全）<br>至少第 3 級（記過）起跳<br>
+          <strong>酒駕/毒品/暴力 → 直接第 5 級（解僱）</strong>
         </div>
       </div>
       <div class="branch branch-no">
@@ -774,14 +788,14 @@
     <div class="severity-section">
       <table class="severity-table">
         <thead>
-          <tr><th>嚴重程度</th><th>處分</th><th>判定要件</th></tr>
+          <tr><th>級別</th><th>嚴重程度</th><th>對應處分</th><th>判定要件</th><th>哪些分類會落在這級</th></tr>
         </thead>
         <tbody>
-          <tr class="sev-1"><td>輕微</td><td>口頭告誡（留紀錄）</td><td>危害低、首犯、可補救、非故意</td></tr>
-          <tr class="sev-2"><td>一般</td><td>申誡</td><td>有一定影響、疏忽造成、或告誡後再犯</td></tr>
-          <tr class="sev-3"><td>嚴重</td><td>記過</td><td>影響乘客/公司聲譽、故意或重大疏忽、累犯</td></tr>
-          <tr class="sev-4"><td>重大</td><td>記大過</td><td>有人身安全風險、嚴重損害公司利益</td></tr>
-          <tr class="sev-5"><td>極重大</td><td>解僱（勞基法 §12）</td><td>酒駕/毒品/暴力/累積大過/嚴重違規</td></tr>
+          <tr class="sev-1"><td>1</td><td>輕微</td><td>口頭告誡（留紀錄）</td><td>危害低、首犯、可補救、非故意</td><td>Q、D</td></tr>
+          <tr class="sev-2"><td>2</td><td>一般</td><td>申誡</td><td>有一定影響、疏忽造成、或告誡後再犯</td><td>Q、D、I、W</td></tr>
+          <tr class="sev-3"><td>3</td><td>嚴重</td><td>記過</td><td>影響乘客/公司聲譽、故意或重大疏忽、累犯</td><td>S、Q、D、I、W</td></tr>
+          <tr class="sev-4"><td>4</td><td>重大</td><td>記大過</td><td>有人身安全風險、嚴重損害公司利益</td><td>S、Q、D、I、W</td></tr>
+          <tr class="sev-5"><td>5</td><td>極重大</td><td>解僱（勞基法 §12）</td><td>酒駕/毒品/暴力/累積大過/嚴重違規</td><td>S、I、W</td></tr>
         </tbody>
       </table>
     </div>
